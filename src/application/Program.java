@@ -10,49 +10,26 @@ import java.text.SimpleDateFormat;
 public class Program {
     public static void main(String[] args) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Connection conn = null;
         PreparedStatement st = null;
         try {
             conn = DB.getConnection();
-
             st = conn.prepareStatement(
-                    "insert into seller "
-                    + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
-                    + "values "
-                    + "(?, ?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, "Carl Purple");
-            st.setString(2,"carl@email.com");
-            st.setDate(3, new Date(sdf.parse("23/09/1985").getTime()));
-            st.setDouble(4,3000.0);
-            st.setInt(5,4);
+                    "update seller set BaseSalary = BaseSalary + ? where (DepartmentId = ?)");
+            st.setDouble(1,200.00);
+            st.setInt(2,2);
 
             int rowsAffected = st.executeUpdate();
 
-            if (rowsAffected > 0) {
-                ResultSet rs = st.getGeneratedKeys();
-                while (rs.next()) {
-                    int id = rs.getInt(1);
-                    System.out.println("Done! Id: " + id);
-                }
-            }
-            else {
-                System.out.println("No rows affected!");
-            }
+            System.out.println("Done! Rows affected: " + rowsAffected);
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        catch (ParseException e) {
+        catch (SQLException e){
             e.printStackTrace();
         }
         finally {
             DB.closeStatement(st);
-            DB.CloseConnection();
+            DB.closeConnection();
         }
-
-
 
     }
 }
