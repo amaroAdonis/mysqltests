@@ -12,18 +12,15 @@ public class Program {
     public static void main(String[] args) {
 
         Connection conn = null;
-        PreparedStatement st = null;
+        Statement st = null;
         try {
             conn = DB.getConnection();
-            st = conn.prepareStatement("delete from department where id = ? ");
-            st.setInt(1,6);
 
-            int rowsAffected = st.executeUpdate();
+            st = conn.createStatement();
 
-            System.out.println("Done! Rows affected: " + rowsAffected);
         }
         catch (SQLException e){
-            throw new DbIntegrityException(e.getMessage());
+            e.printStackTrace();
         }
         finally {
             DB.closeStatement(st);
